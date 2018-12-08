@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Stopwatch demo by cac18315</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+
+    <div class="container" style="margin-top:10px; padding: 15px; border:blueviolet solid 1px;">     
+          
+      <div>
+        <h3>Stopwatch Demo by Celso (cac1815)</h3> <hr>
+        Settings for Clock speed (miliseconds): 
+        <select id=speed onchange="updateSpeed()">
+            <option value="100">100</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+        </select>
+        </p><h5>Running Timer: <span id="timer"></span></h5> </p>
+        <button class="mybtn" id="btnStart" onclick="startTimer()">Start/Stop</button> <button class="mybtn" id="btnReset">Restart</button> <button class="mybtn" id="btnRecord">Record Time</button>
+        <br><br>
+      </div>
+      <div>
+            <p><b>Past Times</b></p>
+            <ul class="" id="pastTimes">
+                
+            </ul>
+      </div>
+    </div>
+
+    <script>
+            var start=true;
+            var state="start";
+            var counter =0;
+            var interval;
+
+            var h=0;  // hour 
+            var m=0;  // minutes
+            var s=0;  // seconds
+            var display="00:00:00"; // format display
+            var speed =document.getElementById('speed').value;       
+           
+            
+            function startTimer(){ 
+
+              if(state=="start"){
+                //alert("starting timer: Timer = "+ speed);
+                interval= setInterval(myTimer,speed);  
+                start=false;
+              }
+              if(state=="stop"){
+                //alert("stopping timer: Timer = " +state);
+                clearInterval(interval);               
+                start=true;
+              }
+          
+            }
+            function updateSpeed(){
+                var speedRange =  document.getElementById('speed');          
+                speed = speedRange.value;  
+                resetTimer();         
+            }
+            document.getElementById('speed').addEventListener('onchange',updateSpeed());
+            function myTimer (){
+                          //alert(new Date().getMinutes());
+                          counter++;                         
+                          s=counter;
+
+                          if (counter==59){                                
+                              counter =0;                              
+                              m++;                             
+                          }
+                          if(m==59){
+                              m=0;
+                              s=0;                             
+                              h= h+1;
+                          }
+                          //formatted display = 00h+':'+00min+':'+00sec;
+                          display = (h<=9?'0'+h:h)+':'+(m<=9?'0'+m:m)+':'+(s<=9?'0'+s:s);
+
+                          //document.getElementById('timer').innerHTML=counter;
+                          document.getElementById('timer').innerHTML=display;
+            }
+           
+            document.getElementById("btnStart").addEventListener("click",function(){ //managing start and stop through button click
+                if (start){
+                    state="start";                   
+                }
+                if(!start){
+                    state="stop";              
+                }
+            });
+            
+            function resetTimer(){ // resetting timer /display
+                
+                    start=true;
+                    state="start"
+                    counter=0; m=0; h=0;
+                    display="00:00:00";
+                    
+                clearInterval(interval);
+                
+                document.getElementById('timer').innerHTML=display;
+                var timeList = document.getElementById("pastTimes").innerHTML='';
+            }
+            document.getElementById("btnReset").addEventListener('click',resetTimer); // reset ev listener
+
+            function recordTime(){ // recording timer value
+               var timeList = document.getElementById("pastTimes");
+               //timeList.appendChild.innerHTML=counter;
+               var li = document.createElement('li');
+               li.innerHTML=display;
+               li.style.listStyle='none'; li.setAttribute('id','myli');
+               timeList.appendChild(li);
+            }
+            document.getElementById('btnRecord').addEventListener('click',recordTime); // record ev listener
+            
+            document.addEventListener('keypress',function(e){  // handling start/stop through key 's/S' press
+                if(e.key.toLowerCase()=='s'){
+                    
+                    if (start){
+                         state="start";                   
+                    }
+                    if(!start){
+                         state="stop";              
+                     }
+                    startTimer();
+                }
+            });
+            document.addEventListener('keypress',function(e){ // handling reset through key 'r/R' press
+                if(e.key.toLowerCase()=='r'){
+                    resetTimer();
+                }
+            });
+            document.addEventListener('keypress', function(e){ //// handling recording through key 't/T' press
+                if(e.key.toLowerCase()=='t'){
+                    recordTime();
+                }
+            });
+            
+        </script>
+        <style>
+                    #myli{
+                        color: red; padding: 4px;
+                        background-color: rgb(149, 218, 223);
+                        margin: 1px;
+                        width: 120px;
+                    }
+                    #myli:hover{ background-color: aliceblue;}
+                    #timer{
+                        color: rgb(255, 0, 76);
+                        font-size: 25px;
+                    }
+
+                    .mybtn{
+                        background-color: rgb(184, 240, 252);
+                    }
+                    .mybtn:hover{
+                        background-color: rgb(79, 185, 250);
+                    }
+
+        </style>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
